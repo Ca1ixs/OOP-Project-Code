@@ -42,15 +42,19 @@ public class ReceiptIT {
                 System.out.println("+=================+");
                 System.out.print("Enter Choice: ");
                 choice = input.nextInt();
-                input.nextLine(); 
-                if (choice != 1 && choice != 2 && choice != 3) {
-                    throw new InputMismatchException("Invalid option. Please choose 1, 2, or 3.");
+                input.nextLine();  
+
+                if (choice < 1 || choice > 3) {
+                    System.out.println("Invalid option. Please choose 1, 2, or 3.");
+                    continue;
                 }
 
             } catch (InputMismatchException e) {
                 System.out.println("Error: Invalid input. Please enter a number (1, 2, or 3).");
-                continue;  
+                input.nextLine(); 
+                continue;
             }
+
             switch (choice) {
                 case 1:
                     signIn(accounts, input);
@@ -65,29 +69,13 @@ public class ReceiptIT {
                     System.out.println("Invalid input, try again.");
             }
         } while (choice != 3);
-        input.close();
-
-       
-        switch(choice) {
-        case 1:
-            signIn(accounts, input);
-        	break;
-        case 2:
-            signUp(accounts, input);
-        	break;
-        case 3:
-        	System.out.println("Exiting...");
-        	break;
-        	default:
-        		System.out.println("Invalid input, try again.");
-        }
 
         input.close();
     }
-    
     private static void signIn(LinkedList<Accounts> accounts, Scanner input) {
         boolean signedIn = false;
         int signInAttempts = 0;
+        int remainAttempts = 3;
         Accounts currentAccount = null;
 
         while (signInAttempts < 3) {
@@ -110,7 +98,8 @@ public class ReceiptIT {
                 signedInMenu(currentAccount, input);
                 break;
             } else {
-                System.out.println("Invalid username or password. Try again.");
+            	remainAttempts--;
+                System.out.println("Invalid username or password. Try again.(Remaining attempt: "+ remainAttempts + ")");
                 signInAttempts++;
             }
         }
@@ -176,21 +165,26 @@ public class ReceiptIT {
             System.out.println("(3) Sign-Out");
             System.out.println("+=================+");
             System.out.print("Enter Choice: ");
-            int menu = input.nextInt();
-            input.nextLine(); 
-            switch (menu) {
-                case 1:
-                    handleMiscellaneousMenu(input, currentAccount);
-                    break;
-                case 2:
-                    displayPurchaseHistory(currentAccount);
-                    break;
-                case 3:
-                    System.out.println("Signing out...");
-                    signedIn = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+            try {
+                int menu = input.nextInt();
+                input.nextLine();
+                switch (menu) {
+                    case 1:
+                        handleMiscellaneousMenu(input, currentAccount);
+                        break;
+                    case 2:
+                        displayPurchaseHistory(currentAccount);
+                        break;
+                    case 3:
+                        System.out.println("Signing out...");
+                        signedIn = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Invalid input. Please enter a number (Please enter a correct value).");
+                input.nextLine();
             }
         }
     }
@@ -243,48 +237,53 @@ public class ReceiptIT {
             System.out.println("(2) Main Menu");
             System.out.println("==================");
             System.out.print("Enter Choice: ");
-
-            int bookChoice = miscInput.nextInt();
-            switch (bookChoice) {
-                case 6479:
-                    processPurchase(currentAccount, "AE5: International Business and Trade", 6479, 500);
-                    break;
-                case 6480:
-                    processPurchase(currentAccount, "AKAD-KOLAB: Tuon sa Kolaboratibong Pagsulat sa Filipino", 6480, 275);
-                    break;
-                case 6609:
-                    processPurchase(currentAccount, "BA-ECO101: Basics of Microeconomics", 6609,300);
-                    break;
-                case 6612:
-                    processPurchase(currentAccount, "BA-MGT101: Introduction to Human Resource Management Revised Edition", 6612, 350);
-                    break;
-                case 6486:
-                    processPurchase(currentAccount, "BA-MGT103: Total Quality Management: An Introduction", 6486, 375);
-                    break;
-                case 6494:
-                    processPurchase(currentAccount, "Cal01: Differential Calculus", 6494, 500);
-                    break;
-                case 6620:
-                    processPurchase(currentAccount, "CPE102: Programming Logic & Design Using Dev C++", 6620, 450);
-                    break;
-                case 6499:
-                    processPurchase(currentAccount, "DE: Engineering Differential Equations", 6499, 500);
-                    break;
-                case 6625:
-                    processPurchase(currentAccount, "ELSCIENCES: Earth and Life Science", 6625, 495);
-                    break;
-                case 6508:
-                    processPurchase(currentAccount, "EMF: Engineering Mathematics Formula", 6508, 150);
-                    break;
-                case 1:
-                	books2(miscInput, currentAccount);
-                	break;
-                case 2:
-                	return;
-                default:
-                	System.out.println("Invalid input...");
+            try {
+            	int bookChoice = miscInput.nextInt();
+                switch (bookChoice) {
+                    case 6479:
+                        processPurchase(currentAccount, "AE5: International Business and Trade", 6479, 500);
+                        break;
+                    case 6480:
+                        processPurchase(currentAccount, "AKAD-KOLAB: Tuon sa Kolaboratibong Pagsulat sa Filipino", 6480, 275);
+                        break;
+                    case 6609:
+                        processPurchase(currentAccount, "BA-ECO101: Basics of Microeconomics", 6609,300);
+                        break;
+                    case 6612:
+                        processPurchase(currentAccount, "BA-MGT101: Introduction to Human Resource Management Revised Edition", 6612, 350);
+                        break;
+                    case 6486:
+                        processPurchase(currentAccount, "BA-MGT103: Total Quality Management: An Introduction", 6486, 375);
+                        break;
+                    case 6494:
+                        processPurchase(currentAccount, "Cal01: Differential Calculus", 6494, 500);
+                        break;
+                    case 6620:
+                        processPurchase(currentAccount, "CPE102: Programming Logic & Design Using Dev C++", 6620, 450);
+                        break;
+                    case 6499:
+                        processPurchase(currentAccount, "DE: Engineering Differential Equations", 6499, 500);
+                        break;
+                    case 6625:
+                        processPurchase(currentAccount, "ELSCIENCES: Earth and Life Science", 6625, 495);
+                        break;
+                    case 6508:
+                        processPurchase(currentAccount, "EMF: Engineering Mathematics Formula", 6508, 150);
+                        break;
+                    case 1:
+                    	books2(miscInput, currentAccount);
+                    	break;
+                    case 2:
+                    	return;
+                    default:
+                    	System.out.println("Invalid input...");
+                }
+            }catch (InputMismatchException e) {
+                System.out.println("Error: Invalid input. Please enter a number (Please enter a correct value).");
+                miscInput.nextLine();
             }
         }
+        
     }
     private static void books2(Scanner miscInput, Accounts currentAccount) {
 
@@ -306,47 +305,53 @@ public class ReceiptIT {
             System.out.println("(2) Back");
             System.out.println("==================");
             System.out.print("Enter Choice: ");
-
-            int bookChoice = miscInput.nextInt();
-            switch (bookChoice) {
-            case 6617:
-                processPurchase(currentAccount, "FM-ELEC103: Treasury Management", 6617, 350);
-                break;
-            case 6615:
-                processPurchase(currentAccount, "FM101: Fundamentals of Financial Management", 6615, 375);
-                break;
-            case 6515:
-                processPurchase(currentAccount, "FM106: Credit and Collection", 6515, 520);
-                break;
-            case 6607:
-                processPurchase(currentAccount, "GE-ELEC6: Environmental Science(A Simplified Approach for College Students)", 6607, 610);
-                break;
-            case 6523:
-                processPurchase(currentAccount, "GE01: Understanding the Self", 6523, 470);
-                break;
-            case 6524:
-                processPurchase(currentAccount, "GE02: Readings in Philippine History", 6524, 325);
-                break;
-            case 6525:
-                processPurchase(currentAccount, "GE03: The Contemporary World", 6525, 375);
-                break;
-            case 6526:
-                processPurchase(currentAccount, "GE04: Mathematics in the Modern World (Revised edition)", 6526, 410);
-                break;
-            case 6527:
-                processPurchase(currentAccount, "GE05: Communicate & Connect Purposive Communication", 6527, 550);
-                break;
-            case 6528:
-                processPurchase(currentAccount, "GE06: An Eye for Art Appreciation: Perception and Expression", 6528, 450);
-                break;
-                case 1:
-                	books3(miscInput, currentAccount);;
-                case 2:
-                	return;
-                default:
-                	System.out.println("Invalid input...");
+            try {
+            	int bookChoice = miscInput.nextInt();
+                switch (bookChoice) {
+                case 6617:
+                    processPurchase(currentAccount, "FM-ELEC103: Treasury Management", 6617, 350);
+                    break;
+                case 6615:
+                    processPurchase(currentAccount, "FM101: Fundamentals of Financial Management", 6615, 375);
+                    break;
+                case 6515:
+                    processPurchase(currentAccount, "FM106: Credit and Collection", 6515, 520);
+                    break;
+                case 6607:
+                    processPurchase(currentAccount, "GE-ELEC6: Environmental Science(A Simplified Approach for College Students)", 6607, 610);
+                    break;
+                case 6523:
+                    processPurchase(currentAccount, "GE01: Understanding the Self", 6523, 470);
+                    break;
+                case 6524:
+                    processPurchase(currentAccount, "GE02: Readings in Philippine History", 6524, 325);
+                    break;
+                case 6525:
+                    processPurchase(currentAccount, "GE03: The Contemporary World", 6525, 375);
+                    break;
+                case 6526:
+                    processPurchase(currentAccount, "GE04: Mathematics in the Modern World (Revised edition)", 6526, 410);
+                    break;
+                case 6527:
+                    processPurchase(currentAccount, "GE05: Communicate & Connect Purposive Communication", 6527, 550);
+                    break;
+                case 6528:
+                    processPurchase(currentAccount, "GE06: An Eye for Art Appreciation: Perception and Expression", 6528, 450);
+                    break;
+                    case 1:
+                    	books3(miscInput, currentAccount);;
+                    case 2:
+                    	return;
+                    default:
+                    	System.out.println("Invalid input...");
+            }
+            
+            }catch (InputMismatchException e) {
+                System.out.println("Error: Invalid input. Please enter a number (Please enter a correct value).");
+                miscInput.nextLine();
             }
         }
+        
     }
     private static void books3(Scanner miscInput, Accounts currentAccount) {
 
@@ -369,52 +374,57 @@ public class ReceiptIT {
             System.out.println("(1) Back");
             System.out.println("==================");
             System.out.print("Enter Choice: ");
+            try {
+            	int bookChoice = miscInput.nextInt();
+                switch (bookChoice) {
 
-            int bookChoice = miscInput.nextInt();
-            switch (bookChoice) {
-
-            case 6529:
-                processPurchase(currentAccount, "GE07: Science Technology and Society", 6529, 630);
-                break;
-            case 6530:
-                processPurchase(currentAccount, "GE08: Introduction to Ethics", 6530, 350);
-                break;
-            case 6531:
-                processPurchase(currentAccount, "GE09: Jose Rizal: A Review on the Life and Works of the First Filipino", 6531, 375);
-                break;
-            case 6614:
-                processPurchase(currentAccount, "MM101: Consumer Behavior Dynamics, Dimensions & Models", 6614, 520);
-                break;
-            case 6618:
-                processPurchase(currentAccount, "MM103: Professional Salesmanship Second Edition", 6618, 490);
-                break;
-            case 6611:
-                processPurchase(currentAccount, "MM105: Pricing Strategy", 6611, 520);
-                break;
-            case 6557:
-                processPurchase(currentAccount, "NSTP: National Service Training Program 1 (NSTP-1) 2023 Edition", 6557, 400);
-                break;
-            case 6616:
-                processPurchase(currentAccount, "OM106: Productivity & Quality Tools", 6616, 495);
-                break;
-            case 6608:
-                processPurchase(currentAccount, "OM107: Facilities Planning and Management Second Edition", 6608, 475);
-                break;
-            case 6613:
-                processPurchase(currentAccount, "OM108: Fundamentals of Information Management", 6613, 275);
-                break;
-            case 6568:
-                processPurchase(currentAccount, "PHILWORLD: 21st Century Literature from the Philippines and the World [K-12]", 6568, 510);
-                break;
-            case 6581:
-                processPurchase(currentAccount, "PROFEDB: Assessment in Learning 1 (A Modular Approach)", 6581, 480);
-                break;
-                case 1:
-                	return;
-                default:
-                	System.out.println("Invalid input...");
+                case 6529:
+                    processPurchase(currentAccount, "GE07: Science Technology and Society", 6529, 630);
+                    break;
+                case 6530:
+                    processPurchase(currentAccount, "GE08: Introduction to Ethics", 6530, 350);
+                    break;
+                case 6531:
+                    processPurchase(currentAccount, "GE09: Jose Rizal: A Review on the Life and Works of the First Filipino", 6531, 375);
+                    break;
+                case 6614:
+                    processPurchase(currentAccount, "MM101: Consumer Behavior Dynamics, Dimensions & Models", 6614, 520);
+                    break;
+                case 6618:
+                    processPurchase(currentAccount, "MM103: Professional Salesmanship Second Edition", 6618, 490);
+                    break;
+                case 6611:
+                    processPurchase(currentAccount, "MM105: Pricing Strategy", 6611, 520);
+                    break;
+                case 6557:
+                    processPurchase(currentAccount, "NSTP: National Service Training Program 1 (NSTP-1) 2023 Edition", 6557, 400);
+                    break;
+                case 6616:
+                    processPurchase(currentAccount, "OM106: Productivity & Quality Tools", 6616, 495);
+                    break;
+                case 6608:
+                    processPurchase(currentAccount, "OM107: Facilities Planning and Management Second Edition", 6608, 475);
+                    break;
+                case 6613:
+                    processPurchase(currentAccount, "OM108: Fundamentals of Information Management", 6613, 275);
+                    break;
+                case 6568:
+                    processPurchase(currentAccount, "PHILWORLD: 21st Century Literature from the Philippines and the World [K-12]", 6568, 510);
+                    break;
+                case 6581:
+                    processPurchase(currentAccount, "PROFEDB: Assessment in Learning 1 (A Modular Approach)", 6581, 480);
+                    break;
+                    case 1:
+                    	return;
+                    default:
+                    	System.out.println("Invalid input...");
+                }
+            }catch (InputMismatchException e) {
+                System.out.println("Error: Invalid input. Please enter a number (Please enter a correct value).");
+                miscInput.nextLine();
             }
         }
+        
     }
     private static void processPurchase(Accounts currentAccount, String bookName, int bookNumber, int bookPrice) {
 
@@ -451,25 +461,33 @@ public class ReceiptIT {
             System.out.println("(3) Garison Belt (70)");
             System.out.println("(4) Back");
             System.out.print("Enter Choice: ");
-            int otherChoice = miscInput.nextInt();
-            switch(otherChoice) {
-            case 1:
-            	otherItemsProcess(currentAccount, "NSTP Bandage", 80);
-            	break;
-            case 2:
-            	otherItemsProcess(currentAccount, "NSTP Uniform", 250);
-            	break;
-            case 3:
-            	otherItemsProcess(currentAccount, "Garison Belt", 70);
-            	break;
-            case 4:
-            	return;
-            default: 
-                System.out.println("Invalid choice. Please try again.");
+            try {
+            	int otherChoice = miscInput.nextInt();
+                switch(otherChoice) {
+                case 1:
+                	otherItemsProcess(currentAccount, "NSTP Bandage", 80);
+                	break;
+                case 2:
+                	otherItemsProcess(currentAccount, "NSTP Uniform", 250);
+                	break;
+                case 3:
+                	otherItemsProcess(currentAccount, "Garison Belt", 70);
+                	break;
+                case 4:
+                	return;
+                default: 
+                    System.out.println("Invalid choice. Please try again.");
 
+                }
+            }catch (InputMismatchException e) {
+                System.out.println("Error: Invalid input. Please enter a number (Please enter a correct value).");
+                miscInput.nextLine();
             }
-    	}
+        }
+        
     }
+            
+    
     private static void otherItemsProcess(Accounts currentAccount, String Items, int Price) {
         Scanner input = new Scanner(System.in);
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -502,87 +520,93 @@ public class ReceiptIT {
             System.out.println("(2) Uniform Bottom");
             System.out.println("(3) Back");
             System.out.print("Enter Choice: ");
-            int unifChoice = miscInput.nextInt();
-            switch(unifChoice) {
-            case 1:
-            	System.out.println("Uniform Top List");
-            	System.out.println("(1) Uniform Polo(Boys)");
-            	System.out.println("(2) Uniform Blouse(Girls)");
-            	System.out.println("(3) PE Top");
-            	System.out.print("Select choice: ");
-            	int unifTop = miscInput.nextInt();
-            	switch(unifTop) {
-            	case 1:
-            		System.out.println("Uniform Polo for Boys");
-            		System.out.println("Price: 515");
-            		System.out.println("S, M, X, XL)");
-            		System.out.print("Input size: ");
-            		String sizeB = miscInput.next();
-            		unifProcess(currentAccount, "Polo for Boys", sizeB);
-            		break;
-            	case 2:
-            		System.out.println("Uniform Blouse for Girls");
-            		System.out.println("Price: 525");
-            		System.out.println("S, M, X, XL)");
-            		System.out.print("Input size: ");
-            		String sizeG = miscInput.next();
-            		unifProcess(currentAccount, "Blouse for Girls", sizeG);
-            		break;
-            	case 3:
-            		System.out.println("PE Uniform Top");
-            		System.out.println("Price: 355");
-            		System.out.println("S, M, X, XL)");
-            		System.out.print("Input size: ");
-            		String sizePeT = miscInput.next();
-            		unifProcess(currentAccount, "PE Top", sizePeT);
-            		break;
-            	default: 
+            try {
+            	int unifChoice = miscInput.nextInt();
+                switch(unifChoice) {
+                case 1:
+                	System.out.println("Uniform Top List");
+                	System.out.println("(1) Uniform Polo(Boys)");
+                	System.out.println("(2) Uniform Blouse(Girls)");
+                	System.out.println("(3) PE Top");
+                	System.out.print("Select choice: ");
+                	int unifTop = miscInput.nextInt();
+                	switch(unifTop) {
+                	case 1:
+                		System.out.println("Uniform Polo for Boys");
+                		System.out.println("Price: 515");
+                		System.out.println("S, M, X, XL)");
+                		System.out.print("Input size: ");
+                		String sizeB = miscInput.next();
+                		unifProcess(currentAccount, "Polo for Boys", sizeB);
+                		break;
+                	case 2:
+                		System.out.println("Uniform Blouse for Girls");
+                		System.out.println("Price: 525");
+                		System.out.println("S, M, X, XL)");
+                		System.out.print("Input size: ");
+                		String sizeG = miscInput.next();
+                		unifProcess(currentAccount, "Blouse for Girls", sizeG);
+                		break;
+                	case 3:
+                		System.out.println("PE Uniform Top");
+                		System.out.println("Price: 355");
+                		System.out.println("S, M, X, XL)");
+                		System.out.print("Input size: ");
+                		String sizePeT = miscInput.next();
+                		unifProcess(currentAccount, "PE Top", sizePeT);
+                		break;
+                	default: 
+                        System.out.println("Invalid choice. Please try again.");
+                	}//unif top
+                	break;
+                case 2:
+       
+                	System.out.println("Uniform Pants List");
+                	System.out.println("(1) Uniform Pants(Boys)");
+                	System.out.println("(2) Uniform Skirt(Girls)");
+                	System.out.println("(3) PE Pants");
+                	System.out.print("Select choice: ");
+                	int unifPants = miscInput.nextInt();
+                	switch(unifPants) {
+                	case 1:
+                		System.out.println("Uniform Pants for Boys");
+                		System.out.println("Price: 530");
+                		System.out.println("S, M, X, XL)");
+                		System.out.print("Input size: ");
+                		String sizeB = miscInput.next();
+                		unifProcess(currentAccount, "Pants for Boys", sizeB);
+                		break;
+                	case 2:
+                		System.out.println("Uniform Skirt for Girls");
+                		System.out.println("Price: 425");
+                		System.out.println("S, M, X, XL)");
+                		System.out.print("Input size: ");
+                		String sizeG = miscInput.next();
+                		unifProcess(currentAccount, "Skirt for Girls", sizeG);
+                		break;
+                	case 3:
+                		System.out.println("PE Uniform Top");
+                		System.out.println("Price: 450");
+                		System.out.println("S, M, X, XL)");
+                		System.out.print("Input size: ");
+                		String sizePeT = miscInput.next();
+                		unifProcess(currentAccount, "PE Pants", sizePeT);
+                		break;
+                	default: 
+                        System.out.println("Invalid choice. Please try again.");
+                	}//unif bottom
+                	break;
+                case 3:
+                	return;
+                default: 
                     System.out.println("Invalid choice. Please try again.");
-            	}//unif top
-            	break;
-            case 2:
-   
-            	System.out.println("Uniform Pants List");
-            	System.out.println("(1) Uniform Pants(Boys)");
-            	System.out.println("(2) Uniform Skirt(Girls)");
-            	System.out.println("(3) PE Pants");
-            	System.out.print("Select choice: ");
-            	int unifPants = miscInput.nextInt();
-            	switch(unifPants) {
-            	case 1:
-            		System.out.println("Uniform Pants for Boys");
-            		System.out.println("Price: 530");
-            		System.out.println("S, M, X, XL)");
-            		System.out.print("Input size: ");
-            		String sizeB = miscInput.next();
-            		unifProcess(currentAccount, "Pants for Boys", sizeB);
-            		break;
-            	case 2:
-            		System.out.println("Uniform Skirt for Girls");
-            		System.out.println("Price: 425");
-            		System.out.println("S, M, X, XL)");
-            		System.out.print("Input size: ");
-            		String sizeG = miscInput.next();
-            		unifProcess(currentAccount, "Skirt for Girls", sizeG);
-            		break;
-            	case 3:
-            		System.out.println("PE Uniform Top");
-            		System.out.println("Price: 450");
-            		System.out.println("S, M, X, XL)");
-            		System.out.print("Input size: ");
-            		String sizePeT = miscInput.next();
-            		unifProcess(currentAccount, "PE Pants", sizePeT);
-            		break;
-            	default: 
-                    System.out.println("Invalid choice. Please try again.");
-            	}//unif bottom
-            	break;
-            case 3:
-            	return;
-            default: 
-                System.out.println("Invalid choice. Please try again.");
-                
-            }//unif choice
+             
+                }//unif choice
+            }catch (InputMismatchException e) {
+                System.out.println("Error: Invalid input. Please enter a number (Please enter a correct value).");
+                miscInput.nextLine();
+            }
+            
             
         }
     }
